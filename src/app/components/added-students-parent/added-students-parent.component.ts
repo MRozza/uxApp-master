@@ -44,11 +44,32 @@ export class AddedStudentsParentComponent implements OnInit {
       student.name = `Student ${index}`;
       // get data from json
       student.MajorSkills = this.global.setting.majorSkills;
-      console.log(student.MajorSkills);
 
       // iterate through major skills to calculate data and init slider options
       // todo: add to a method later
       student.MajorSkills.map(majorSkill => {
+        majorSkill.SkillTotal = 0;
+        majorSkill.Skills = majorSkill.Skills.filter(Skill => Skill.Enabled);
+        majorSkill.Skills.map(skill => {
+          majorSkill.SkillTotal += skill.Total;
+
+          // setting slider options for each skill
+          const array: any[] = [];
+          skill.Grades.map(grade =>
+            array.push({
+              value: grade.Grade,
+              legend: grade.Name,
+              desc: grade.Desc
+            })
+          );
+          skill.options = {
+            showTicksValues: true,
+            stepsArray: array,
+            ticksTooltip: (v: number): string => {
+              return array[v].desc;
+            }
+          };
+        });
         // since we start with perfect grades, totalscore=maximum marks
         majorSkill.TotalScored = majorSkill.SkillTotal;
         student.totalOverAll += majorSkill.TotalScored;
@@ -56,6 +77,7 @@ export class AddedStudentsParentComponent implements OnInit {
       student.maximumAllowedMark = student.totalOverAll;
     });
   }
+
   public beforeChange(event: NgbTabChangeEvent) {
     this.manualRefresh.emit();
   }

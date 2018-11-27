@@ -51,38 +51,9 @@ export class StartComponent implements OnInit {
     await this.dataService.getJSON().subscribe(data => {
       this.defaultSetting.majorSkills = data;
 
-      // iterate through major skills to calculate data and init slider options
-      // todo: add to a method later
-      this.defaultSetting.majorSkills.forEach(majorSkill => {
-        majorSkill.SkillTotal = 0;
-        majorSkill.Skills.forEach(skill => {
-          majorSkill.SkillTotal += skill.Total;
-          skill.Enabled = true;
-          // setting slider options for each skill
-          const array: any[] = [];
-          skill.Grades.map(grade =>
-            array.push({
-              value: grade.Grade,
-              legend: grade.Name,
-              desc: grade.Desc
-            })
-          );
-          skill.options = {
-            showTicksValues: true,
-            stepsArray: array,
-            ticksTooltip: (v: number): string => {
-              return array[v].desc;
-            }
-          };
-        });
-        // since we start with perfect grades, totalscore=maximum marks
-        majorSkill.TotalScored = majorSkill.SkillTotal;
-      });
-      console.log(this.defaultSetting);
-
       const settings = JSON.parse(localStorage.getItem('courseSettings'));
       if (settings) {
-        this.settings.push(settings);
+        this.settings = settings;
         console.log(this.settings);
       }
     });
@@ -125,7 +96,6 @@ export class StartComponent implements OnInit {
     }
     const skill: Skill = <Skill>{};
     skill.Id = this.majorSkillUpdating.Skills.length + 1;
-    this.majorSkillUpdating.SkillTotal += 4;
     skill.Enabled = true;
     skill.Name = this.skillForm.value.skillName;
     skill.Total = 4;
@@ -154,21 +124,7 @@ export class StartComponent implements OnInit {
       Selected: true,
       Desc: this.skillForm.value.poorDesc
     });
-    const array: any[] = [];
-    skill.Grades.map(grade =>
-      array.push({
-        value: grade.Grade,
-        legend: grade.Name,
-        desc: grade.Desc
-      })
-    );
-    skill.options = {
-      showTicksValues: true,
-      stepsArray: array,
-      ticksTooltip: (v: number): string => {
-        return array[v].desc;
-      }
-    };
+
     this.majorSkillUpdating.Skills.push(skill);
     $('#addNewModal').modal('hide');
   }
