@@ -85,6 +85,11 @@ hr {
   margin: 15vh auto 0px auto;
 }
 
-.marked-slider .ng5-slider-pointer{
-  background-color: black !important
+.ng5-slider .ng5-slider-pointer{
+  background-color: lightgray !important
 }
+
+.marked-slider .ng5-slider-pointer{
+  background-color: #0db9f0 !important
+}
+

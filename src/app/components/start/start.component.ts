@@ -50,6 +50,11 @@ export class StartComponent implements OnInit {
     this.global.isEdit = false;
     await this.dataService.getJSON().subscribe(data => {
       this.defaultSetting.majorSkills = data;
+      this.defaultSetting.majorSkills.forEach(majorSkill=>{
+        majorSkill.Skills.forEach(skill=>{
+          skill.Enabled=true;
+        })
+      })
 
       const settings = JSON.parse(localStorage.getItem('courseSettings'));
       if (settings) {
@@ -80,6 +85,9 @@ export class StartComponent implements OnInit {
       this.global.students.push(student);
     }
     console.log(this.global.students);
+    if(!this.selectedSetting.majorSkills){
+      this.selectedSetting=this.defaultSetting;
+    }
     this.global.setting = this.selectedSetting;
     this.router.navigate(['/grading-student']);
   }
